@@ -12,7 +12,7 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/emersion/go-smtp v0.24.0
-	github.com/expr-lang/expr v1.17.6
+	github.com/expr-lang/expr v1.17.7
 	github.com/fatih/color v1.18.0
 	github.com/felixge/httpsnoop v1.0.4
 	github.com/golang-jwt/jwt/v5 v5.3.0
