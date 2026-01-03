@@ -33,6 +33,7 @@ import (
 	"github.com/target/goalert/app"
 	"github.com/target/goalert/config"
 	"github.com/target/goalert/devtools/mockslack"
+	"github.com/target/goalert/devtools/mocktelnyx" // Added import
 	"github.com/target/goalert/devtools/mocktwilio"
 	"github.com/target/goalert/devtools/pgdump-lite"
 	"github.com/target/goalert/devtools/pgmocktime"
@@ -88,6 +89,10 @@ type Harness struct {
 
 	tw  *twilioAssertionAPI
 	twS *httptest.Server
+
+	// Added Telnyx Support
+	tl  *telnyxAssertionAPI
+	tlS *httptest.Server
 
 	cfg config.Config
 
@@ -160,6 +165,7 @@ func NewHarnessDebugDB(t *testing.T, initSQL, migrationName string) *Harness {
 const (
 	twilioAuthToken  = "11111111111111111111111111111111"
 	twilioAccountSID = "AC00000000000000000000000000000000"
+	telnyxAPIKey     = "KEY00000000000000000000000000000000" // Added Telnyx Key
 	mailgunAPIKey    = "key-00000000000000000000000000000000"
 )
 
@@ -203,6 +209,11 @@ func NewStoppedHarnessWithFlags(t *testing.T, initSQL string, sqlData interface{
 		MinQueueTime: 100 * time.Millisecond, // until we have a stateless backend for answering calls
 	}
 
+	// Added Telnyx Config
+	tlCfg := mocktelnyx.Config{
+		APIKey: telnyxAPIKey,
+	}
+
 	pgTime, err := pgmocktime.New(ctx, DBURL(name))
 	if err != nil {
 		t.Fatal("create pgmocktime:", err)
@@ -237,6 +248,20 @@ func NewStoppedHarnessWithFlags(t *testing.T, initSQL string, sqlData interface{
 	}, mocktwilio.NewServer(twCfg), h.phoneCCG.Get("twilio"))
 
 	h.twS = httptest.NewServer(h.tw)
+
+	// Initialize Telnyx Assertion API
+	h.tl = newTelnyxAssertionAPI(func() {
+		h.FastForward(time.Minute)
+		h.Trigger()
+	}, func(num string) string {
+		id, ok := h.phoneCCG.names[num]
+		if !ok {
+			return num
+		}
+		return fmt.Sprintf("%s/Phone(%s)", num, id)
+	}, mocktelnyx.NewServer(tlCfg), h.phoneCCG.Get("telnyx"))
+
+	h.tlS = httptest.NewServer(h.tl)
 
 	err = h.pgTime.Inject(ctx)
 	if err != nil {
@@ -273,6 +298,11 @@ func (h *Harness) StartWithAppCfgHook(fn func(*app.Config)) {
 	cfg.Twilio.AccountSID = twilioAccountSID
 	cfg.Twilio.AuthToken = twilioAuthToken
 	cfg.Twilio.FromNumber = h.phoneCCG.Get("twilio")
+
+	// Telnyx Configuration
+	cfg.Telnyx.Enable = true
+	cfg.Telnyx.APIKey = telnyxAPIKey
+	cfg.Telnyx.FromNumber = h.phoneCCG.Get("telnyx")
 
 	cfg.SMTP.Enable = true
 	cfg.SMTP.Address = h.email.Addr()
@@ -317,6 +347,7 @@ func (h *Harness) StartWithAppCfgHook(fn func(*app.Config)) {
 	appCfg.JSON = true
 	appCfg.DBURL = h.dbURL
 	appCfg.TwilioBaseURL = h.twS.URL
+	appCfg.TelnyxBaseURL = h.tlS.URL // Override Telnyx Base URL to Mock
 	appCfg.DBMaxOpen = 5
 	appCfg.SlackBaseURL = h.slackS.URL
 	appCfg.SMTPListenAddr = "localhost:0"
@@ -350,6 +381,7 @@ func (h *Harness) StartWithAppCfgHook(fn func(*app.Config)) {
 		h.t.Fatalf("failed to start backend: %v", err)
 	}
 	h.TwilioNumber("") // register default number
+	h.TelnyxNumber("") // register default telnyx number
 	h.slack.SetActionURL(h.slackApp.ClientID, h.backend.URL()+"/api/v2/slack/message-action")
 
 	go func() {
@@ -696,6 +728,7 @@ func (h *Harness) Close() {
 	h.dumpDB() // early as possible
 
 	h.tw.WaitAndAssert(h.t)
+	h.tl.WaitAndAssert(h.t) // Added Telnyx WaitAndAssert
 	h.slack.WaitAndAssert()
 	h.email.WaitAndAssert()
 
@@ -713,8 +746,10 @@ func (h *Harness) Close() {
 
 	h.slackS.Close()
 	h.twS.Close()
+	h.tlS.Close() // Close Telnyx Server
 
 	h.tw.Close()
+	h.tl.Close() // Close Telnyx Assertion API
 
 	h.pgTime.Close()
 
@@ -751,6 +786,26 @@ func (h *Harness) TwilioNumber(id string) string {
 	err = h.tw.RegisterVoiceCallback(num, h.URL()+"/v1/twilio/voice/call")
 	if err != nil {
 		h.t.Fatalf("failed to init twilio (voice callback): %v", err)
+	}
+
+	return num
+}
+
+// TelnyxNumber will return a registered (or register if missing) Telnyx number for the given ID.
+func (h *Harness) TelnyxNumber(id string) string {
+	if id != "" {
+		id = ":" + id
+	}
+	num := h.phoneCCG.Get("telnyx" + id)
+
+	// Register Callbacks with the Mock Server
+	err := h.tl.RegisterSMSCallback(num, h.URL()+"/v1/telnyx/sms/messages")
+	if err != nil {
+		h.t.Fatalf("failed to init telnyx (SMS callback): %v", err)
+	}
+	err = h.tl.RegisterVoiceCallback(num, h.URL()+"/v1/telnyx/voice/call")
+	if err != nil {
+		h.t.Fatalf("failed to init telnyx (voice callback): %v", err)
 	}
 
 	return num
@@ -848,15 +903,15 @@ func (h *Harness) WaitAndAssertOnCallUsers(serviceID string, userIDs ...string) 
 		}
 
 		doQL(fmt.Sprintf(`
-			query{
-				service(id: "%s"){
-					onCallUsers{
-						userID
-						userName
-					}
-				}
-			}
-		`, serviceID), &result)
+            query{
+                service(id: "%s"){
+                    onCallUsers{
+                        userID
+                        userName
+                    }
+                }
+            }
+        `, serviceID), &result)
 
 		var ids []string
 		for _, oc := range result.Service.OnCallUsers {

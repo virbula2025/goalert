@@ -1252,6 +1252,26 @@ export type TargetType =
   | 'userOverride'
   | 'userSession'
 
+export interface TelnyxConfig {
+  apiKey: string
+  connectionId: string
+  enable: boolean
+  fromNumber: string
+  publicKey: string
+  voiceLanguage: string
+  voiceName: string
+}
+
+export interface TelnyxConfigInput {
+  apiKey: string
+  connectionId: string
+  enable: boolean
+  fromNumber: string
+  publicKey: string
+  voiceLanguage: string
+  voiceName: string
+}
+
 export interface TemporarySchedule {
   end: ISOTimestamp
   shifts: OnCallShift[]
@@ -1669,6 +1689,13 @@ type ConfigID =
   | 'Twilio.DisableTwoWaySMS'
   | 'Twilio.SMSCarrierLookup'
   | 'Twilio.SMSFromNumberOverride'
+  | 'Telnyx.Enable'
+  | 'Telnyx.APIKey'
+  | 'Telnyx.PublicKey'
+  | 'Telnyx.FromNumber'
+  | 'Telnyx.ConnectionID'
+  | 'Telnyx.VoiceName'
+  | 'Telnyx.VoiceLanguage'
   | 'SMTP.Enable'
   | 'SMTP.From'
   | 'SMTP.Address'
