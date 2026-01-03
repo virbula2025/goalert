@@ -44,6 +44,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/sqlc-dev/pqtype v0.3.0
 	github.com/stretchr/testify v1.11.1
+	github.com/team-telnyx/telnyx-go/v3 v3.7.0
 	github.com/vektah/gqlparser/v2 v2.5.31
 	golang.org/x/crypto v0.45.0
 	golang.org/x/oauth2 v0.33.0
@@ -272,6 +273,7 @@ require (
 	github.com/sqlc-dev/sqlc v1.30.0 // indirect
 	github.com/ssgreg/nlreturn/v2 v2.2.1 // indirect
 	github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf // indirect
+	github.com/standard-webhooks/standard-webhooks/libraries v0.0.0-20250711233419-a173a6c0125c // indirect
 	github.com/stbenjam/no-sprintf-host-port v0.2.0 // indirect
 	github.com/stoewer/go-strcase v1.3.1 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect

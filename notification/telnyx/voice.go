@@ -3,9 +3,11 @@ package telnyx
 import (
 	"context"
 	"database/sql"
-	"fmt"
+	"encoding/json"
 
 	"github.com/target/goalert/config"
+	"github.com/team-telnyx/telnyx-go/v3"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
 // Voice implements the notification.Sender interface for calls.
@@ -18,34 +20,40 @@ func NewVoice(ctx context.Context, db *sql.DB, cfg *Config) (*Voice, error) {
 	return &Voice{Config: cfg}, nil
 }
 
-// teXMLRequest is the payload specifically for the TeXML API.
-type teXMLRequest struct {
-	To   string `json:"to"`
-	From string `json:"from"`
-	Url  string `json:"url"` // TeXML expects "url", Call Control expects "webhook_url"
-}
-
-func (v *Voice) MakeCall(ctx context.Context, to string, callbackURL string) (string, error) {
+// MakeCall initiates an outbound call using the official Telnyx SDK (TeXML).
+func (v *Voice) MakeCall(ctx context.Context, dest, callbackURL string) (string, error) {
 	cfg := config.FromContext(ctx)
 
-	// 1. Use a local struct or ensure CallInitiateRequest has `json:"url"`
-	req := teXMLRequest{
-		To:   to,
-		From: cfg.Telnyx.FromNumber,
-		Url:  callbackURL,
+	// 1. Initialize the Client
+	client := telnyx.NewClient(option.WithAPIKey(cfg.Telnyx.APIKey))
+
+	// 2. Prepare the parameters
+	params := telnyx.TexmlCallInitiateParams{
+		To:        dest,
+		From:      cfg.Telnyx.FromNumber,
+		URL:       telnyx.String(callbackURL),
+		URLMethod: telnyx.TexmlCallInitiateParamsURLMethodPost,
 	}
 
-	// 2. Construct the correct TeXML endpoint path
-	// The Connection ID must be in the URL path, not the body.
-	// We assume v.postJSON appends this path to the base Telnyx URL (https://api.telnyx.com/v2/)
-	path := fmt.Sprintf("texml/calls/%s", cfg.Telnyx.ConnectionID)
-
-	var resp CallResponse
-	// 3. Send to the TeXML endpoint
-	err := v.postJSON(ctx, path, req, &resp)
+	// 3. Call the API
+	// The second argument is the Connection ID (Application ID)
+	resp, err := client.Texml.Calls.Initiate(ctx, cfg.Telnyx.ConnectionID, params)
 	if err != nil {
 		return "", err
 	}
 
-	return resp.Data.CallControlID, nil
+	// 4. Return the Call SID
+	// WORKAROUND: The Telnyx generated go SDK struct 'TexmlCallInitiateResponseData' is missing the 'Sid' field.
+	// We must parse the raw JSON to get it.
+	var result struct {
+		Data struct {
+			Sid string `json:"sid"`
+		} `json:"data"`
+	}
+
+	if err := json.Unmarshal([]byte(resp.RawJSON()), &result); err != nil {
+		return "", err
+	}
+
+	return result.Data.Sid, nil
 }

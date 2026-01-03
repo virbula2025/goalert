@@ -688,6 +688,8 @@ github.com/ssgreg/nlreturn/v2 v2.2.1 h1:X4XDI7jstt3ySqGU86YGAURbxw3oTDPK9sPEi6YE
 github.com/ssgreg/nlreturn/v2 v2.2.1/go.mod h1:E/iiPB78hV7Szg2YfRgyIrk1AD6JVMTRkkxBiELzh2I=
 github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf h1:pvbZ0lM0XWPBqUKqFU8cmavspvIl9nulOYwdy6IFRRo=
 github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf/go.mod h1:RJID2RhlZKId02nZ62WenDCkgHFerpIOmW0iT7GKmXM=
+github.com/standard-webhooks/standard-webhooks/libraries v0.0.0-20250711233419-a173a6c0125c h1:Mm99t6GdFMtZOwyyvu3q8gXeZX0sqnjvimTC9QCJwQc=
+github.com/standard-webhooks/standard-webhooks/libraries v0.0.0-20250711233419-a173a6c0125c/go.mod h1:L1MQhA6x4dn9r007T033lsaZMv9EmBAdXyU/+EF40fo=
 github.com/stbenjam/no-sprintf-host-port v0.2.0 h1:i8pxvGrt1+4G0czLr/WnmyH7zbZ8Bg8etvARQ1rpyl4=
 github.com/stbenjam/no-sprintf-host-port v0.2.0/go.mod h1:eL0bQ9PasS0hsyTyfTjjG+E80QIyPnBVQbYZyv20Jfk=
 github.com/stoewer/go-strcase v1.3.1 h1:iS0MdW+kVTxgMoE1LAZyMiYJFKlOzLooE4MxjirtkAs=
@@ -716,6 +718,8 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 github.com/tdakkota/asciicheck v0.4.1 h1:bm0tbcmi0jezRA2b5kg4ozmMuGAFotKI3RZfrhfovg8=
 github.com/tdakkota/asciicheck v0.4.1/go.mod h1:0k7M3rCfRXb0Z6bwgvkEIMleKH3kXNz9UqJ9Xuqopr8=
+github.com/team-telnyx/telnyx-go/v3 v3.7.0 h1:A2TumvPcAaTUp27FpumMPAqDXY0OTOqAiHDTYdFVc30=
+github.com/team-telnyx/telnyx-go/v3 v3.7.0/go.mod h1:2GjHKkT9EuDTwUW03BC0GoN2k0AjCzjYPHujpNrx3R4=
 github.com/tenntenn/modver v1.0.1 h1:2klLppGhDgzJrScMpkj9Ujy3rXPUspSjAcev9tSEBgA=
 github.com/tenntenn/modver v1.0.1/go.mod h1:bePIyQPb7UeioSRkw3Q0XeMhYZSMx9B8ePqg6SAMGH0=
 github.com/tenntenn/text/transform v0.0.0-20200319021203-7eef512accb3 h1:f+jULpRQGxTSkNYKJ51yaw6ChIqO+Je8UqsTKN/cDag=
