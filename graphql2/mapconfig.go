@@ -85,6 +85,8 @@ func MapConfigValues(cfg config.Config) []ConfigValue {
 		{ID: "Telnyx.PublicKey", Type: ConfigTypeString, Description: "The Public Key used to verify Telnyx webhooks (Ed25519).", Value: cfg.Telnyx.PublicKey},
 		{ID: "Telnyx.FromNumber", Type: ConfigTypeString, Description: "The Telnyx number to use for outgoing notifications.", Value: cfg.Telnyx.FromNumber},
 		{ID: "Telnyx.ConnectionID", Type: ConfigTypeString, Description: "The Call Control Connection ID (Application ID) for Voice calls.", Value: cfg.Telnyx.ConnectionID},
+		{ID: "Telnyx.VoiceName", Type: ConfigTypeString, Description: "The Telnyx TeXML voice to use (e.g. 'Polly.Joanna'). Defaults to 'alice'.", Value: cfg.Telnyx.VoiceName},
+		{ID: "Telnyx.VoiceLanguage", Type: ConfigTypeString, Description: "The Telnyx TeXML language to use (e.g. 'en-US'). Defaults to 'en-US'.", Value: cfg.Telnyx.VoiceLanguage},
 		{ID: "SMTP.Enable", Type: ConfigTypeBoolean, Description: "Enables email as a contact method.", Value: fmt.Sprintf("%t", cfg.SMTP.Enable)},
 		{ID: "SMTP.From", Type: ConfigTypeString, Description: "The email address messages should be sent from.", Value: cfg.SMTP.From},
 		{ID: "SMTP.Address", Type: ConfigTypeString, Description: "The server address to use for sending email. Port is optional and defaults to 465, or 25 if Disable TLS is set. Common ports are: 25 or 587 for STARTTLS (or unencrypted) and 465 for TLS.", Value: cfg.SMTP.Address},
@@ -370,6 +372,10 @@ func ApplyConfigValues(cfg config.Config, vals []ConfigValueInput) (config.Confi
 			cfg.Telnyx.FromNumber = v.Value
 		case "Telnyx.ConnectionID":
 			cfg.Telnyx.ConnectionID = v.Value
+		case "Telnyx.VoiceName":
+			cfg.Telnyx.VoiceName = v.Value
+		case "Telnyx.VoiceLanguage":
+			cfg.Telnyx.VoiceLanguage = v.Value
 		case "SMTP.Enable":
 			val, err := parseBool(v.ID, v.Value)
 			if err != nil {

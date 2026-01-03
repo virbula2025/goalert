@@ -100,6 +100,7 @@ type App struct {
 	telnyxConfig *telnyx.Config
     telnyxSMS    *telnyx.SMS
     telnyxVoice  *telnyx.Voice
+	telnyxHandler *telnyx.Handler
 
 	slackChan *slack.ChannelSender
 

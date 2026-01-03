@@ -159,6 +159,9 @@ func (app *App) initHTTP(ctx context.Context) error {
 	mux.HandleFunc("POST /api/v2/twilio/call", app.twilioVoice.ServeCall)
 	mux.HandleFunc("POST /api/v2/twilio/call/status", app.twilioVoice.ServeStatusCallback)
 
+	// Register Telnyx Handler
+	mux.Handle("POST /api/v2/telnyx/voice", app.telnyxHandler)
+
 	mux.HandleFunc("POST /api/v2/slack/message-action", app.slackChan.ServeMessageAction)
 
 	middleware = append(middleware,

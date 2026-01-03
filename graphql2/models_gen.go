@@ -781,6 +781,26 @@ type SystemLimitInput struct {
 	Value int      `json:"value"`
 }
 
+type TelnyxConfig struct {
+	Enable        bool   `json:"enable"`
+	APIKey        string `json:"apiKey"`
+	PublicKey     string `json:"publicKey"`
+	FromNumber    string `json:"fromNumber"`
+	ConnectionID  string `json:"connectionId"`
+	VoiceName     string `json:"voiceName"`
+	VoiceLanguage string `json:"voiceLanguage"`
+}
+
+type TelnyxConfigInput struct {
+	Enable        bool   `json:"enable"`
+	APIKey        string `json:"apiKey"`
+	PublicKey     string `json:"publicKey"`
+	FromNumber    string `json:"fromNumber"`
+	ConnectionID  string `json:"connectionId"`
+	VoiceName     string `json:"voiceName"`
+	VoiceLanguage string `json:"voiceLanguage"`
+}
+
 type TimeSeriesBucket struct {
 	Start time.Time `json:"start"`
 	End   time.Time `json:"end"`

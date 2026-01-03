@@ -2,53 +2,34 @@ package telnyx
 
 import (
 	"encoding/xml"
-	"io"
+	"github.com/target/goalert/config"
 )
 
-// TeXML mirrors Twilio's TwiML but is compatible with Telnyx.
-type TeXML struct {
-	XMLName xml.Name `xml:"Response"`
-	Verbs   []interface{}
+// SayVerb represents the <Say> element in TeXML
+type SayVerb struct {
+	XMLName  xml.Name `xml:"Say"`
+	Voice    string   `xml:"voice,attr,omitempty"`
+	Language string   `xml:"language,attr,omitempty"`
+	Text     string   `xml:",chardata"`
 }
 
-type Say struct {
-	XMLName xml.Name `xml:"Say"`
-	Voice   string   `xml:"voice,attr,omitempty"`
-	Text    string   `xml:",chardata"`
-}
+// Helper to create the Say verb using config
+func NewSayVerb(cfg config.Config, text string) SayVerb {
+    // Default to 'alice' if not set
+    voice := cfg.Telnyx.VoiceName
+    if voice == "" {
+        voice = "alice"
+    }
+    
+    // Default to 'en-US' if not set
+    lang := cfg.Telnyx.VoiceLanguage
+    if lang == "" {
+        lang = "en-US"
+    }
 
-type Play struct {
-	XMLName xml.Name `xml:"Play"`
-	URL     string   `xml:",chardata"`
-}
-
-type Dial struct {
-	XMLName xml.Name `xml:"Dial"`
-	Timeout int      `xml:"timeout,attr,omitempty"`
-	Action  string   `xml:"action,attr,omitempty"`
-	Number  string   `xml:",chardata"`
-}
-
-type Gather struct {
-	XMLName     xml.Name `xml:"Gather"`
-	Action      string   `xml:"action,attr,omitempty"`
-	NumDigits   int      `xml:"numDigits,attr,omitempty"`
-	Timeout     int      `xml:"timeout,attr,omitempty"`
-	Verbs       []interface{}
-}
-
-type Hangup struct {
-	XMLName xml.Name `xml:"Hangup"`
-}
-
-func (t *TeXML) Add(v interface{}) {
-	t.Verbs = append(t.Verbs, v)
-}
-
-func (t *TeXML) Encode(w io.Writer) error {
-	_, err := w.Write([]byte(xml.Header))
-	if err != nil {
-		return err
+	return SayVerb{
+		Voice:    voice,
+		Language: lang,
+		Text:     text,
 	}
-	return xml.NewEncoder(w).Encode(t)
 }

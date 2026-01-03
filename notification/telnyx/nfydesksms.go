@@ -111,7 +111,8 @@ func (s *SMS) Send(ctx context.Context, msg notification.Message) (*notification
 		if err != nil {
 			return nil, err
 		}
-		body := fmt.Sprintf("Your GoAlert verification code is: %d", m.Code)
+		// FIXED: Changed %d to %s because m.Code is a string
+		body := fmt.Sprintf("Your GoAlert verification code is: %s", m.Code)
 		return s.SendSMS(ctx, dest, body)
 	}
 

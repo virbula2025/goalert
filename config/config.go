@@ -119,7 +119,7 @@ type Config struct {
 		RCSSenderID string `info:"The sender ID for RCS messages. Required if RCS is enabled for the MessagingServiceSID."`
 
 		DisableTwoWaySMS      bool     `info:"Disables SMS reply codes for alert messages."`
-		SMSCarrierLookup      bool     `info:"Perform carrier lookup of SMS contact methods (required for SMSFromNumberOverride). Extra charges may apply."`
+        SMSCarrierLookup      bool     `info:"Perform carrier lookup of SMS contact methods (required for SMSFromNumberOverride). Extra charges may apply."`
 		SMSFromNumberOverride []string `info:"List of 'carrier=number' pairs, SMS messages to numbers of the provided carrier string (exact match) will use the alternate From Number."`
 	}
 
@@ -131,6 +131,9 @@ type Config struct {
 		PublicKey    string `info:"The Public Key used to verify Telnyx webhooks (Ed25519)."`
 		FromNumber   string `public:"true" info:"The Telnyx number to use for outgoing notifications."`
 		ConnectionID string `info:"The Call Control Connection ID (Application ID) for Voice calls."`
+
+		VoiceName     string `info:"The Telnyx TeXML voice to use (e.g. 'Polly.Joanna'). Defaults to 'alice'."`
+		VoiceLanguage string `info:"The Telnyx TeXML language to use (e.g. 'en-US'). Defaults to 'en-US'."`
 	}
 
 	SMTP struct {
@@ -148,7 +151,7 @@ type Config struct {
 
 	Webhook struct {
 		Enable      bool     `public:"true" info:"Enables webhook as a contact method."`
-        AllowedURLs []string `public:"true" info:"If set, allows webhooks for these domains only."`
+		AllowedURLs []string `public:"true" info:"If set, allows webhooks for these domains only."`
 	}
 
 	Feedback struct {
@@ -382,7 +385,7 @@ func (cfg Config) ValidReferer(reqURL, ref string) bool {
 			return false
 		}
 		return matched
-	}
+    }
 
 	for _, u := range cfg.Auth.RefererURLs {
 		matched, err := MatchURL(u, ref)
@@ -500,6 +503,8 @@ func (cfg Config) Validate() error {
 		validateKey("Telnyx.APIKey", cfg.Telnyx.APIKey),
 		validateKey("Telnyx.PublicKey", cfg.Telnyx.PublicKey),
 		validateKey("Telnyx.ConnectionID", cfg.Telnyx.ConnectionID),
+		validate.ASCII("Telnyx.VoiceName", cfg.Telnyx.VoiceName, 0, 50),
+		validate.ASCII("Telnyx.VoiceLanguage", cfg.Telnyx.VoiceLanguage, 0, 10),
 	)
 
 	if cfg.General.GoogleAnalyticsID != "" {
@@ -508,6 +513,10 @@ func (cfg Config) Validate() error {
 
 	if cfg.Twilio.VoiceName != "" && cfg.Twilio.VoiceLanguage == "" {
 		err = validate.Many(err, validation.NewFieldError("Twilio.VoiceLanguage", "required when Twilio.VoiceName is set"))
+	}
+
+	if cfg.Telnyx.VoiceName != "" && cfg.Telnyx.VoiceLanguage == "" {
+		err = validate.Many(err, validation.NewFieldError("Telnyx.VoiceLanguage", "required when Telnyx.VoiceName is set"))
 	}
 
 	if cfg.OIDC.IssuerURL != "" {
@@ -527,15 +536,15 @@ func (cfg Config) Validate() error {
 	}
 	if cfg.Twilio.RCSSenderID != "" {
 		err = validate.Many(err, validate.ASCII("Twilio.RCSSenderSID", cfg.Twilio.RCSSenderID, 1, 255))
-        if cfg.Twilio.MessagingServiceSID == "" {
-            err = validate.Many(err, validation.NewFieldError("Twilio.MessagingServiceSID", "required when Twilio.RCSSenderID is set"))
-        }
-    }
-    
-    // Telnyx specific validations
-    if cfg.Telnyx.FromNumber != "" {
-        err = validate.Many(err, validate.Phone("Telnyx.FromNumber", cfg.Telnyx.FromNumber))
-    }
+		if cfg.Twilio.MessagingServiceSID == "" {
+			err = validate.Many(err, validation.NewFieldError("Twilio.MessagingServiceSID", "required when Twilio.RCSSenderID is set"))
+		}
+	}
+
+	// Telnyx specific validations
+	if cfg.Telnyx.FromNumber != "" {
+		err = validate.Many(err, validate.Phone("Telnyx.FromNumber", cfg.Telnyx.FromNumber))
+	}
 
 	if cfg.Mailgun.EmailDomain != "" {
 		err = validate.Many(err, validate.Email("Mailgun.EmailDomain", "example@"+cfg.Mailgun.EmailDomain))

@@ -784,6 +784,16 @@ type ComplexityRoot struct {
 		Type func(childComplexity int) int
 	}
 
+	TelnyxConfig struct {
+		APIKey        func(childComplexity int) int
+		ConnectionID  func(childComplexity int) int
+		Enable        func(childComplexity int) int
+		FromNumber    func(childComplexity int) int
+		PublicKey     func(childComplexity int) int
+		VoiceLanguage func(childComplexity int) int
+		VoiceName     func(childComplexity int) int
+	}
+
 	TemporarySchedule struct {
 		End    func(childComplexity int) int
 		Shifts func(childComplexity int) int
@@ -4459,6 +4469,49 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Target.Type(childComplexity), true
 
+	case "TelnyxConfig.apiKey":
+		if e.complexity.TelnyxConfig.APIKey == nil {
+			break
+		}
+
+		return e.complexity.TelnyxConfig.APIKey(childComplexity), true
+	case "TelnyxConfig.connectionId":
+		if e.complexity.TelnyxConfig.ConnectionID == nil {
+			break
+		}
+
+		return e.complexity.TelnyxConfig.ConnectionID(childComplexity), true
+	case "TelnyxConfig.enable":
+		if e.complexity.TelnyxConfig.Enable == nil {
+			break
+		}
+
+		return e.complexity.TelnyxConfig.Enable(childComplexity), true
+	case "TelnyxConfig.fromNumber":
+		if e.complexity.TelnyxConfig.FromNumber == nil {
+			break
+		}
+
+		return e.complexity.TelnyxConfig.FromNumber(childComplexity), true
+	case "TelnyxConfig.publicKey":
+		if e.complexity.TelnyxConfig.PublicKey == nil {
+			break
+		}
+
+		return e.complexity.TelnyxConfig.PublicKey(childComplexity), true
+	case "TelnyxConfig.voiceLanguage":
+		if e.complexity.TelnyxConfig.VoiceLanguage == nil {
+			break
+		}
+
+		return e.complexity.TelnyxConfig.VoiceLanguage(childComplexity), true
+	case "TelnyxConfig.voiceName":
+		if e.complexity.TelnyxConfig.VoiceName == nil {
+			break
+		}
+
+		return e.complexity.TelnyxConfig.VoiceName(childComplexity), true
+
 	case "TemporarySchedule.end":
 		if e.complexity.TemporarySchedule.End == nil {
 			break
@@ -4951,6 +5004,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputSlackUserGroupSearchOptions,
 		ec.unmarshalInputSystemLimitInput,
 		ec.unmarshalInputTargetInput,
+		ec.unmarshalInputTelnyxConfigInput,
 		ec.unmarshalInputTimeSeriesOptions,
 		ec.unmarshalInputTimeZoneSearchOptions,
 		ec.unmarshalInputUpdateAlertsByServiceInput,
@@ -22690,6 +22744,209 @@ func (ec *executionContext) fieldContext_Target_name(_ context.Context, field gr
 	return fc, nil
 }
 
+func (ec *executionContext) _TelnyxConfig_enable(ctx context.Context, field graphql.CollectedField, obj *TelnyxConfig) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_TelnyxConfig_enable,
+		func(ctx context.Context) (any, error) {
+			return obj.Enable, nil
+		},
+		nil,
+		ec.marshalNBoolean2bool,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_TelnyxConfig_enable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TelnyxConfig",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TelnyxConfig_apiKey(ctx context.Context, field graphql.CollectedField, obj *TelnyxConfig) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_TelnyxConfig_apiKey,
+		func(ctx context.Context) (any, error) {
+			return obj.APIKey, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_TelnyxConfig_apiKey(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TelnyxConfig",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TelnyxConfig_publicKey(ctx context.Context, field graphql.CollectedField, obj *TelnyxConfig) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_TelnyxConfig_publicKey,
+		func(ctx context.Context) (any, error) {
+			return obj.PublicKey, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_TelnyxConfig_publicKey(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TelnyxConfig",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TelnyxConfig_fromNumber(ctx context.Context, field graphql.CollectedField, obj *TelnyxConfig) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_TelnyxConfig_fromNumber,
+		func(ctx context.Context) (any, error) {
+			return obj.FromNumber, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_TelnyxConfig_fromNumber(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TelnyxConfig",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TelnyxConfig_connectionId(ctx context.Context, field graphql.CollectedField, obj *TelnyxConfig) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_TelnyxConfig_connectionId,
+		func(ctx context.Context) (any, error) {
+			return obj.ConnectionID, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_TelnyxConfig_connectionId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TelnyxConfig",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TelnyxConfig_voiceName(ctx context.Context, field graphql.CollectedField, obj *TelnyxConfig) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_TelnyxConfig_voiceName,
+		func(ctx context.Context) (any, error) {
+			return obj.VoiceName, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_TelnyxConfig_voiceName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TelnyxConfig",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TelnyxConfig_voiceLanguage(ctx context.Context, field graphql.CollectedField, obj *TelnyxConfig) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_TelnyxConfig_voiceLanguage,
+		func(ctx context.Context) (any, error) {
+			return obj.VoiceLanguage, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_TelnyxConfig_voiceLanguage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TelnyxConfig",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _TemporarySchedule_start(ctx context.Context, field graphql.CollectedField, obj *schedule.TemporarySchedule) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -29682,6 +29939,75 @@ func (ec *executionContext) unmarshalInputTargetInput(ctx context.Context, obj a
 				return it, err
 			}
 			it.Type = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputTelnyxConfigInput(ctx context.Context, obj any) (TelnyxConfigInput, error) {
+	var it TelnyxConfigInput
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"enable", "apiKey", "publicKey", "fromNumber", "connectionId", "voiceName", "voiceLanguage"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "enable":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("enable"))
+			data, err := ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Enable = data
+		case "apiKey":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("apiKey"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.APIKey = data
+		case "publicKey":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("publicKey"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PublicKey = data
+		case "fromNumber":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fromNumber"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.FromNumber = data
+		case "connectionId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("connectionId"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ConnectionID = data
+		case "voiceName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("voiceName"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VoiceName = data
+		case "voiceLanguage":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("voiceLanguage"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VoiceLanguage = data
 		}
 	}
 
@@ -38535,6 +38861,75 @@ func (ec *executionContext) _Target(ctx context.Context, sel ast.SelectionSet, o
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var telnyxConfigImplementors = []string{"TelnyxConfig"}
+
+func (ec *executionContext) _TelnyxConfig(ctx context.Context, sel ast.SelectionSet, obj *TelnyxConfig) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, telnyxConfigImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TelnyxConfig")
+		case "enable":
+			out.Values[i] = ec._TelnyxConfig_enable(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "apiKey":
+			out.Values[i] = ec._TelnyxConfig_apiKey(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "publicKey":
+			out.Values[i] = ec._TelnyxConfig_publicKey(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "fromNumber":
+			out.Values[i] = ec._TelnyxConfig_fromNumber(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "connectionId":
+			out.Values[i] = ec._TelnyxConfig_connectionId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "voiceName":
+			out.Values[i] = ec._TelnyxConfig_voiceName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "voiceLanguage":
+			out.Values[i] = ec._TelnyxConfig_voiceLanguage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

@@ -29,5 +29,7 @@ func (app *App) initTelnyx(ctx context.Context) error {
 		return errors.Wrap(err, "init TelnyxVoice")
 	}
 
+	app.telnyxHandler = telnyx.NewHandler(app.AlertStore)
+	
 	return nil
 }

@@ -9,6 +9,6 @@
 
 * Modify config/config.go: Add structs to hold TelnyxAPIKey, TelnyxAppID, TelnyxPublicKey.
 
-* Modify notification/registry.go: Register telnyx as a valid provider type so the UI allows selecting it.
+* Modify app/startup.go: Register telnyx as a valid provider type so the UI allows selecting it.
 
 This implementation aims to give us the complete feature parity with the Twilio files you provided, using Telnyx's JSON-native API and modern security standards.

@@ -3,12 +3,14 @@ package telnyx
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"strconv"
 
-	"github.com/nyaruka/phonenumbers"
 	"github.com/target/goalert/config"
 	"github.com/target/goalert/notification"
 	"github.com/target/goalert/notification/nfydest"
 	"github.com/target/goalert/validation"
+	"github.com/nyaruka/phonenumbers"
 )
 
 const (
@@ -83,7 +85,20 @@ func (v *Voice) DisplayInfo(ctx context.Context, args map[string]string) (*nfyde
 // Send implements the notification.Sender interface.
 func (v *Voice) Send(ctx context.Context, msg notification.Message) (*notification.SentMessage, error) {
 	cfg := config.FromContext(ctx)
-	callback := cfg.CallbackURL("/api/v2/telnyx/voice")
+	
+	// Start with the base callback URL
+	callbackBase := cfg.CallbackURL("/api/v2/telnyx/voice")
+
+	// Helper to append query params to the callback
+	addParams := func(base string, params map[string]string) string {
+		u, _ := url.Parse(base)
+		q := u.Query()
+		for k, v := range params {
+			q.Set(k, v)
+		}
+		u.RawQuery = q.Encode()
+		return u.String()
+	}
 
 	extractDest := func(d interface{ Value() (interface{}, error) }) (string, error) {
 		val, err := d.Value()
@@ -102,30 +117,49 @@ func (v *Voice) Send(ctx context.Context, msg notification.Message) (*notificati
 		if err != nil {
 			return nil, err
 		}
+		// Append type=test
+		callback := addParams(callbackBase, map[string]string{"type": "test"})
+		
 		id, err := v.MakeCall(ctx, dest, callback)
 		if err != nil {
 			return nil, err
 		}
-		return &notification.SentMessage{
-			ExternalID: id,
-			State:      notification.StateSending,
-			SrcValue:   dest,
-		}, nil
+		return &notification.SentMessage{ExternalID: id, State: notification.StateSending, SrcValue: dest}, nil
 
 	case notification.Alert:
 		dest, err := extractDest(m.Dest)
 		if err != nil {
 			return nil, err
 		}
+		// Append type=alert & alertID=123
+		callback := addParams(callbackBase, map[string]string{
+			"type":    "alert",
+			"alertID": strconv.Itoa(m.AlertID),
+		})
+
 		id, err := v.MakeCall(ctx, dest, callback)
 		if err != nil {
 			return nil, err
 		}
-		return &notification.SentMessage{
-			ExternalID: id,
-			State:      notification.StateSending,
-			SrcValue:   dest,
-		}, nil
+		return &notification.SentMessage{ExternalID: id, State: notification.StateSending, SrcValue: dest}, nil
+
+	case notification.Verification:
+		dest, err := extractDest(m.Dest)
+		if err != nil {
+			return nil, err
+		}
+		// Append type=verify & code=123456
+		// FIXED: m.Code is already a string, so we pass it directly
+		callback := addParams(callbackBase, map[string]string{
+			"type": "verify",
+			"code": m.Code, 
+		})
+		
+		id, err := v.MakeCall(ctx, dest, callback)
+		if err != nil {
+			return nil, err
+		}
+		return &notification.SentMessage{ExternalID: id, State: notification.StateSending, SrcValue: dest}, nil
 	}
 
 	return nil, fmt.Errorf("telnyx: unsupported message type %T", msg)
