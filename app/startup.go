@@ -66,8 +66,9 @@ func (app *App) startup(ctx context.Context) error {
 	ctx = app.ConfigStore.Config().Context(ctx)
 
 	// init twilio before engine
-	app.initStartup(
-		ctx, "Startup.Twilio", app.initTwilio)
+	app.initStartup(ctx, "Startup.Twilio", app.initTwilio)
+    // Register Telnyx initialization here
+	app.initStartup(ctx, "Startup.Telnyx", app.initTelnyx)
 
 	app.initStartup(ctx, "Startup.Slack", app.initSlack)
 
@@ -86,6 +87,11 @@ func (app *App) startup(ctx context.Context) error {
 
 	app.DestRegistry.RegisterProvider(ctx, app.twilioSMS)
 	app.DestRegistry.RegisterProvider(ctx, app.twilioVoice)
+
+    // Register Telnyx providers here
+	app.DestRegistry.RegisterProvider(ctx, app.telnyxSMS)
+	app.DestRegistry.RegisterProvider(ctx, app.telnyxVoice)
+
 	app.DestRegistry.RegisterProvider(ctx, email.NewSender(ctx))
 	app.DestRegistry.RegisterProvider(ctx, app.ScheduleStore)
 	app.DestRegistry.RegisterProvider(ctx, app.UserStore)

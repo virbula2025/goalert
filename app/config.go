@@ -59,6 +59,7 @@ type Config struct {
 	EnableSecureHeaders bool
 
 	TwilioBaseURL string
+	TelnyxBaseURL string
 	SlackBaseURL  string
 
 	DBURL     string

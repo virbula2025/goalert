@@ -39,6 +39,7 @@ import (
 	"github.com/target/goalert/notification/nfydest"
 	"github.com/target/goalert/notification/slack"
 	"github.com/target/goalert/notification/twilio"
+	"github.com/target/goalert/notification/telnyx"
 	"github.com/target/goalert/notificationchannel"
 	"github.com/target/goalert/oncall"
 	"github.com/target/goalert/override"
@@ -95,6 +96,10 @@ type App struct {
 	twilioSMS    *twilio.SMS
 	twilioVoice  *twilio.Voice
 	twilioConfig *twilio.Config
+
+	telnyxConfig *telnyx.Config
+    telnyxSMS    *telnyx.SMS
+    telnyxVoice  *telnyx.Voice
 
 	slackChan *slack.ChannelSender
 
