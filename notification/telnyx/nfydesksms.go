@@ -27,7 +27,7 @@ func (s *SMS) TypeInfo(ctx context.Context) (*nfydest.TypeInfo, error) {
 	cfg := config.FromContext(ctx)
 	return &nfydest.TypeInfo{
 		Type:                       DestTypeTelnyxSMS,
-		Name:                       "Text Message (Telnyx)",
+		Name:                       "Text Message (Telnyx SMS)",
 		Enabled:                    cfg.Telnyx.Enable,
 		UserDisclaimer:             cfg.General.NotificationDisclaimer,
 		SupportsAlertNotifications: true,

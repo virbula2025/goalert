@@ -28,7 +28,7 @@ func (v *Voice) TypeInfo(ctx context.Context) (*nfydest.TypeInfo, error) {
 	cfg := config.FromContext(ctx)
 	return &nfydest.TypeInfo{
 		Type:                       DestTypeTelnyxVoice,
-		Name:                       "Voice Call (Telnyx)",
+		Name:                       "Voice Call (Telnyx Voice)",
 		Enabled:                    cfg.Telnyx.Enable,
 		UserDisclaimer:             cfg.General.NotificationDisclaimer,
 		SupportsAlertNotifications: true,

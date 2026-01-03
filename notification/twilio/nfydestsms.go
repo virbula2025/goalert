@@ -22,7 +22,7 @@ func (s *SMS) TypeInfo(ctx context.Context) (*nfydest.TypeInfo, error) {
 	cfg := config.FromContext(ctx)
 	return &nfydest.TypeInfo{
 		Type:                       DestTypeTwilioSMS,
-		Name:                       "Text Message (SMS)",
+		Name:                       "Text Message (Twilio SMS)",
 		Enabled:                    cfg.Twilio.Enable,
 		UserDisclaimer:             cfg.General.NotificationDisclaimer,
 		SupportsAlertNotifications: true,

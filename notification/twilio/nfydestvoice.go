@@ -21,7 +21,7 @@ func (v *Voice) TypeInfo(ctx context.Context) (*nfydest.TypeInfo, error) {
 	cfg := config.FromContext(ctx)
 	return &nfydest.TypeInfo{
 		Type:                       DestTypeTwilioVoice,
-		Name:                       "Voice Call",
+		Name:                       "Voice Call (Twilio Voice)",
 		Enabled:                    cfg.Twilio.Enable,
 		UserDisclaimer:             cfg.General.NotificationDisclaimer,
 		SupportsAlertNotifications: true,
