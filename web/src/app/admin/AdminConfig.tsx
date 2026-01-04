@@ -64,6 +64,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.text.secondary,
     flexGrow: 1,
   },
+  enabled: {
+    color: theme.palette.success.main,
+    fontWeight: 500,
+  },
+  disabled: {
+    color: theme.palette.error.main,
+    fontWeight: 500,
+  },
   changeChip: {
     justifyContent: 'flex-end',
   },
@@ -185,7 +193,9 @@ export default function AdminConfig(): React.JSX.Element {
               >
                 {formatHeading(groupID)}
               </Typography>
-              <Typography className={classes.secondaryHeading}>
+              <Typography
+                className={`${classes.secondaryHeading} ${
+                  hasEnable(groupID) ? isEnabled(groupID) ? classes.enabled : classes.disabled : '' }`} >
                 {hasEnable(groupID) &&
                   (isEnabled(groupID) ? 'Enabled' : 'Disabled')}
               </Typography>
