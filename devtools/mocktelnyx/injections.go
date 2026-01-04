@@ -116,3 +116,24 @@ func (s *Server) startCall(c *CallState) {
 	c.Status = "in-progress"
 	s.mx.Unlock()
 }
+
+// RejectNextCall configures the mock to fail the next voice call attempt to this number.
+func (s *Server) RejectNextCall(to string) {
+    s.mx.Lock()
+    defer s.mx.Unlock()
+    // Implementation depends on how you want to simulate failure (e.g. 500 error or "failed" status)
+    // For now, let's say we register a "fail-next" flag in the server state.
+    s.failNextCall[to] = true
+}
+
+// RejectNextSMS configures the mock to simulate a delivery failure for the next SMS to `to`.
+func (s *Server) RejectNextSMS(to string) {
+	s.mx.Lock()
+	defer s.mx.Unlock()
+    // You need to handle this flag in s.handleMessages or 
+    // trigger a separate callback to the status webhook with "failed".
+    // 
+    // Telnyx reports status asynchronously via webhook.
+    // So this function should likely immediately fire the failure webhook 
+    // to the URL registered for this number.
+}
